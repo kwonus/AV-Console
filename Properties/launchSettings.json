@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AV-Console": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
