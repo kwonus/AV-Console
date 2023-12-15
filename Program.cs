@@ -41,7 +41,7 @@ namespace AVConsole
                     }
                     if (tuple.stmt != null)
                     {
-                        singletons.ProcessStatement(tuple.stmt, tuple.result); // process singletons and persistent settings
+                        //singletons.ProcessStatement(tuple.stmt, tuple.result); // process singletons and persistent settings
 
                         if (tuple.stmt.Commands != null)
                         {
