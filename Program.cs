@@ -11,7 +11,7 @@ namespace AVConsole
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             var singletons = new LocalStatementProcessor();
-            var engine = new AVEngine();
+            var engine = new AVEngine(@"C:\Users\Me\AVX\Quelle\", @"C:\src\AVX\omega\AVX-Omega-3911.data");
 
             (UInt32 expected, bool okay) version = Pinshot.Blue.Pinshot_RustFFI.LibraryVersion;
 
@@ -34,15 +34,15 @@ namespace AVConsole
 
                     var tuple = engine.Execute(input);
 
-                    error = !string.IsNullOrWhiteSpace(tuple.error);
-                    if (error)
+                    var message = !string.IsNullOrWhiteSpace(tuple.message);
+                    if (message)
                     {
-                        Console.Error.WriteLine(tuple.error);
+                        Console.Error.WriteLine(tuple.message);
                     }
                     if (tuple.stmt != null)
                     {
                         //singletons.ProcessStatement(tuple.stmt, tuple.result); // process singletons and persistent settings
-
+                        /*
                         if (tuple.stmt.Commands != null)
                         {
                             int cnt = 0;
@@ -96,8 +96,9 @@ namespace AVConsole
                                     Console.WriteLine(line);
                                 }
                             }
-//                          var stmt = new NativeStatement(tuple.stmt.Blueprint);
-                        }
+                            var stmt = new NativeStatement(tuple.stmt.Blueprint);
+                        
+                        }*/
                     }
                 }
                 else

@@ -51,7 +51,7 @@ namespace AVConsole
                     {
 
                     }
-                    else if (stmt.Singleton.GetType() == typeof(QReset))
+                    else if (stmt.Singleton.GetType() == typeof(QClear))
                     {
 
                     }
@@ -59,23 +59,13 @@ namespace AVConsole
                     {
 
                     }
-                    else if (stmt.Singleton.GetType() == typeof(QVersion))
+                    else if (stmt.Singleton.GetType() == typeof(QSet))
                     {
 
                     }
                     else
                     {
                         Console.Error.WriteLine("Unexpected statement type encountered.");
-                    }
-                }
-                else if (stmt.Commands != null)
-                {
-                    foreach (var segment in stmt.Commands.Assignments)
-                    {
-                        if (segment.Persistent)
-                        {
-                            Console.Error.WriteLine("TO DO: variable assignment login goes here.");
-                        }
                     }
                 }
             }
