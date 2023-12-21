@@ -10,8 +10,7 @@ namespace AVConsole
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            var singletons = new LocalStatementProcessor();
-            var engine = new AVEngine(@"C:\Users\Me\AVX\Quelle\", @"C:\src\AVX\omega\AVX-Omega-3911.data");
+             var engine = new AVEngine(@"C:\Users\Me\AVX\Quelle\", @"C:\src\AVX\omega\AVX-Omega-3911.data");
 
             (UInt32 expected, bool okay) version = Pinshot.Blue.Pinshot_RustFFI.LibraryVersion;
 
