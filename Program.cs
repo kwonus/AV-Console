@@ -36,7 +36,12 @@ namespace AVConsole
                     var message = !string.IsNullOrWhiteSpace(tuple.message);
                     if (message)
                     {
+                        error = true;
                         Console.Error.WriteLine(tuple.message);
+                    }
+                    if (error)
+                    {
+                        Console.Error.WriteLine("One or more errors were encountered");
                     }
                 }
                 else
