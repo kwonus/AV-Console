@@ -36,7 +36,7 @@ namespace AVConsole
                     var message = !string.IsNullOrWhiteSpace(tuple.message);
                     if (message)
                     {
-                        error = true;
+                        error = !tuple.message.Equals("ok", StringComparison.InvariantCultureIgnoreCase);
                         Console.Error.WriteLine(tuple.message);
                     }
                     if (error)
