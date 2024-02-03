@@ -59,20 +59,22 @@ namespace AVConsole
                             {
                                 foreach (QueryBook book in exp.Books.Values)
                                 {
+                                    byte c = 0;
                                     byte v = 0;
                                     foreach (QueryChapter chapter in book.Chapters.Values)
                                     {
                                         Dictionary<BCVW, QueryTag> tags = new(); //<verse, tag>
                                         foreach (QueryMatch match in chapter.Matches)
                                         {
-                                            if (v != match.Start.V)
+                                            if (v != match.Start.V || c != match.Start.C)
                                             {
                                                 if (tags.Count > 0)
                                                 {
-                                                    engine.Render(Console.Out, book.BookNum, chapter.ChapterNum, v, QFormatVal.MD, QLexicalDisplay.QDisplayVal.AV, tags);
+                                                    engine.Render(Console.Out, book.BookNum, c, v, QFormatVal.MD, QLexicalDisplay.QDisplayVal.AV, tags);
                                                     tags.Clear();
                                                 }
                                                 v = match.Start.V;
+                                                c = match.Start.C;
                                             }
                                             foreach (QueryTag highlight in match.Highlights)
                                             {
@@ -81,7 +83,7 @@ namespace AVConsole
                                         }
                                         if (tags.Count > 0)
                                         {
-                                            engine.Render(Console.Out, book.BookNum, chapter.ChapterNum, v, QFormatVal.MD, QLexicalDisplay.QDisplayVal.AV, tags);
+                                            engine.Render(Console.Out, book.BookNum, /*chapter.ChapterNum:=0*/c, v, QFormatVal.MD, QLexicalDisplay.QDisplayVal.AV, tags);
                                             tags.Clear();
                                         }
                                     }
