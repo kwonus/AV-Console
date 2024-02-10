@@ -70,7 +70,7 @@ namespace AVConsole
                                             {
                                                 if (tags.Count > 0)
                                                 {
-                                                    engine.Render(Console.Out, book.BookNum, c, v, QFormatVal.MD, QLexicalDisplay.QDisplayVal.AV, tags);
+                                                    engine.RenderVerseAsMarkdownTemporary(Console.Out, book.BookNum, c, v, QLexicalDisplay.QDisplayVal.AV, tags);
                                                     tags.Clear();
                                                 }
                                                 v = match.Start.V;
@@ -83,7 +83,7 @@ namespace AVConsole
                                         }
                                         if (tags.Count > 0)
                                         {
-                                            engine.Render(Console.Out, book.BookNum, /*chapter.ChapterNum:=0*/c, v, QFormatVal.MD, QLexicalDisplay.QDisplayVal.AV, tags);
+                                            engine.RenderVerseAsMarkdownTemporary(Console.Out, book.BookNum, /*chapter.ChapterNum:=0*/c, v, QLexicalDisplay.QDisplayVal.AV, tags);
                                             tags.Clear();
                                         }
                                     }
