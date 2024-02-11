@@ -5,6 +5,8 @@ using AVXLib.Memory;
 using Blueprint.Blue;
 using Blueprint.Model.Implicit;
 using System.Data;
+using System.Reflection.PortableExecutable;
+using System.Text;
 using System.Text.Json;
 using static Blueprint.Model.Implicit.QFormat;
 
@@ -59,32 +61,19 @@ namespace AVConsole
                             {
                                 foreach (QueryBook book in exp.Books.Values)
                                 {
-                                    byte c = 0;
-                                    byte v = 0;
                                     foreach (QueryChapter chapter in book.Chapters.Values)
                                     {
                                         Dictionary<BCVW, QueryTag> tags = new(); //<verse, tag>
-                                        foreach (QueryMatch match in chapter.Matches)
+                                        foreach (var match in chapter.Matches)
                                         {
-                                            if (v != match.Start.V || c != match.Start.C)
-                                            {
-                                                if (tags.Count > 0)
-                                                {
-                                                    engine.RenderVerseAsMarkdownTemporary(Console.Out, book.BookNum, c, v, QLexicalDisplay.QDisplayVal.AV, tags);
-                                                    tags.Clear();
-                                                }
-                                                v = match.Start.V;
-                                                c = match.Start.C;
-                                            }
-                                            foreach (QueryTag highlight in match.Highlights)
-                                            {
-                                                tags[highlight.Coordinates] = highlight;
-                                            }
-                                        }
-                                        if (tags.Count > 0)
-                                        {
-                                            engine.RenderVerseAsMarkdownTemporary(Console.Out, book.BookNum, /*chapter.ChapterNum:=0*/c, v, QLexicalDisplay.QDisplayVal.AV, tags);
-                                            tags.Clear();
+                                            byte c = match.Value.Start.C;
+                                            byte v = match.Value.Start.V;
+
+                                            VerseRendering vrend = engine.GetVerse(book.BookNum, c, v, chapter.Matches);
+                                            SoloVerseRendering vsolo = new(vrend);
+                                            StringBuilder builder = new();
+                                            if (engine.RenderVerseSolo(builder, vsolo, exp.Settings))
+                                                Console.WriteLine(builder.ToString());
                                         }
                                     }
                                 }
