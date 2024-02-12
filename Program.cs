@@ -45,13 +45,10 @@ namespace AVConsole
                     if (message)
                     {
                         error = !tuple.message.Equals("ok", StringComparison.InvariantCultureIgnoreCase);
-                        Console.Error.WriteLine(tuple.message);
+                        if (error)
+                            Console.Error.WriteLine(tuple.message);
                     }
-                    if (error)
-                    {
-                        Console.Error.WriteLine("One or more errors were encountered");
-                    }
-                    else if (tuple.find != null && tuple.find.Expressions != null)
+                    if (!error && (tuple.find != null && tuple.find.Expressions != null))
                     {
                         QueryResult result = tuple.find;
 
@@ -63,17 +60,18 @@ namespace AVConsole
                                 {
                                     foreach (QueryChapter chapter in book.Chapters.Values)
                                     {
-                                        Dictionary<BCVW, QueryTag> tags = new(); //<verse, tag>
-                                        foreach (var match in chapter.Matches)
+                                        foreach (var match in book.Matches)
                                         {
                                             byte c = match.Value.Start.C;
                                             byte v = match.Value.Start.V;
 
-                                            VerseRendering vrend = engine.GetVerse(book.BookNum, c, v, chapter.Matches);
+                                            VerseRendering vrend = engine.GetVerse(book.BookNum, c, v, book.Matches);
                                             SoloVerseRendering vsolo = new(vrend);
                                             StringBuilder builder = new();
                                             if (engine.RenderVerseSolo(builder, vsolo, exp.Settings))
                                                 Console.WriteLine(builder.ToString());
+                                            else
+                                                Console.WriteLine("ERROR: Unable to render verse");
                                         }
                                     }
                                 }
