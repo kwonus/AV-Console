@@ -1,17 +1,10 @@
-﻿using AVSearch.Model.Expressions;
-using AVSearch.Model.Results;
-using AVXFramework;
-using AVXLib.Memory;
-using Blueprint.Blue;
-using Blueprint.Model.Implicit;
-using System.Data;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Text.Json;
-using static Blueprint.Model.Implicit.QFormat;
-
-namespace AVConsole
+﻿namespace AVConsole
 {
+    using AVSearch.Model.Expressions;
+    using AVSearch.Model.Results;
+    using AVXFramework;
+    using System.Text;
+
     internal class Program
     {
         static void Main(string[] args)
@@ -28,6 +21,9 @@ namespace AVConsole
             }
             Console.WriteLine("Hello AV-Console!\n");
 
+            byte lastBook = 0;
+            byte lastChapter = 0;
+            bool wholeChapter = false;
             bool done = false;
             do
             {
@@ -38,6 +34,17 @@ namespace AVConsole
                 if (!string.IsNullOrWhiteSpace(input))
                 {
                     input = input.Trim();
+
+                    if (input.Equals("whole-chapter"))
+                    {
+                        wholeChapter = true;
+                        continue;
+                    }
+                    else if (input.Equals("only-verse"))
+                    {
+                        wholeChapter = false;
+                        continue;
+                    }
 
                     var tuple = engine.Execute(input);
 
@@ -63,15 +70,41 @@ namespace AVConsole
                                         foreach (var match in book.Matches)
                                         {
                                             byte c = match.Value.Start.C;
-                                            byte v = match.Value.Start.V;
 
-                                            VerseRendering vrend = engine.GetVerse(book.BookNum, c, v, book.Matches);
-                                            SoloVerseRendering vsolo = new(vrend);
-                                            StringBuilder builder = new();
-                                            if (engine.RenderVerseSolo(builder, vsolo, exp.Settings))
-                                                Console.WriteLine(builder.ToString());
+                                            if (wholeChapter)
+                                            {
+                                                if (c != lastChapter && book.BookNum != lastBook)
+                                                {
+                                                    ChapterRendering crend = engine.GetChapter(book.BookNum, c, book.Matches);
+                                                    StringBuilder builder = new();
+                                                    if (engine.RenderChapter(builder, crend, exp.Settings))
+                                                        Console.WriteLine(builder.ToString());
+                                                    else
+                                                        Console.WriteLine("ERROR: Unable to render chapter");
+
+                                                    lastChapter = c;
+                                                    lastBook = book.BookNum;
+                                                }
+                                                Console.Write("Continue? (y/n)");
+                                                string? answer = Console.ReadLine();
+                                                if ((answer != null) && answer.StartsWith("n", StringComparison.InvariantCultureIgnoreCase))
+                                                {
+                                                    done = true;
+                                                    goto DONE;
+                                                }
+                                            }
                                             else
-                                                Console.WriteLine("ERROR: Unable to render verse");
+                                            {
+                                                byte v = match.Value.Start.V;
+
+                                                VerseRendering vrend = engine.GetVerse(book.BookNum, c, v, book.Matches);
+                                                SoloVerseRendering vsolo = new(vrend);
+                                                StringBuilder builder = new();
+                                                if (engine.RenderVerseSolo(builder, vsolo, exp.Settings))
+                                                    Console.WriteLine(builder.ToString());
+                                                else
+                                                    Console.WriteLine("ERROR: Unable to render verse");
+                                            }
                                         }
                                     }
                                 }
@@ -85,6 +118,8 @@ namespace AVConsole
                 {
                     done = true;
                 }
+            DONE:
+            ;
             }   while (!done);
         }
     }
