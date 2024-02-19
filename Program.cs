@@ -11,7 +11,7 @@
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-             var engine = new AVEngine(@"C:\Users\Me\AVX\Quelle\", @"C:\src\AVX\omega\AVX-Omega-3911.data");
+             var engine = new AVEngine(@"C:\src\Digital-AV\omega\AVX-Omega.data");
 
             (UInt32 expected, bool okay) version = Pinshot.Blue.Pinshot_RustFFI.LibraryVersion;
 
