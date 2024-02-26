@@ -47,7 +47,7 @@
                     }
 
                     var tuple = engine.Execute(input);
-
+                   
                     var message = !string.IsNullOrWhiteSpace(tuple.message);
                     if (message)
                     {
@@ -55,9 +55,9 @@
                         if (error)
                             Console.Error.WriteLine(tuple.message);
                     }
-                    if (!error && (tuple.find != null && tuple.find.Expressions != null))
+                    if (!error && (tuple.search != null && tuple.search.Expressions != null))
                     {
-                        QueryResult result = tuple.find;
+                        QueryResult result = tuple.search;
 
                         foreach (SearchExpression exp in result.Expressions)
                         {
