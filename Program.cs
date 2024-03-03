@@ -3,6 +3,7 @@
     using AVSearch.Model.Expressions;
     using AVSearch.Model.Results;
     using AVXFramework;
+    using Blueprint.Blue;
     using System.Text;
 
     internal class Program
@@ -11,7 +12,7 @@
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-             var engine = new AVEngine(@"C:\src\Digital-AV\omega\AVX-Omega.data");
+            var engine = new AVEngine();
 
             (UInt32 expected, bool okay) version = Pinshot.Blue.Pinshot_RustFFI.LibraryVersion;
 
