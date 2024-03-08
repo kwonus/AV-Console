@@ -56,56 +56,55 @@
                         if (error)
                             Console.Error.WriteLine(tuple.message);
                     }
-                    if (!error && (tuple.search != null && tuple.search.Expressions != null))
+                    if (!error && (tuple.search != null && tuple.search.Expression != null))
                     {
                         QueryResult result = tuple.search;
 
-                        foreach (SearchExpression exp in result.Expressions)
+                        SearchExpression exp = result.Expression;
+
+                        if (exp.Hits > 0)
                         {
-                            if (exp.Hits > 0)
+                            foreach (QueryBook book in exp.Books.Values)
                             {
-                                foreach (QueryBook book in exp.Books.Values)
+                                foreach (QueryChapter chapter in book.Chapters.Values)
                                 {
-                                    foreach (QueryChapter chapter in book.Chapters.Values)
+                                    foreach (var match in book.Matches)
                                     {
-                                        foreach (var match in book.Matches)
+                                        byte c = match.Value.Start.C;
+
+                                        if (wholeChapter)
                                         {
-                                            byte c = match.Value.Start.C;
-
-                                            if (wholeChapter)
+                                            if (c != lastChapter && book.BookNum != lastBook)
                                             {
-                                                if (c != lastChapter && book.BookNum != lastBook)
-                                                {
-                                                    ChapterRendering crend = engine.GetChapter(book.BookNum, c, book.Matches);
-                                                    StringBuilder builder = new();
-                                                    if (engine.RenderChapter(builder, crend, exp.Settings))
-                                                        Console.WriteLine(builder.ToString());
-                                                    else
-                                                        Console.WriteLine("ERROR: Unable to render chapter");
-
-                                                    lastChapter = c;
-                                                    lastBook = book.BookNum;
-                                                }
-                                                Console.Write("Continue? (y/n)");
-                                                string? answer = Console.ReadLine();
-                                                if ((answer != null) && answer.StartsWith("n", StringComparison.InvariantCultureIgnoreCase))
-                                                {
-                                                    done = true;
-                                                    goto DONE;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                byte v = match.Value.Start.V;
-
-                                                VerseRendering vrend = engine.GetVerse(book.BookNum, c, v, book.Matches);
-                                                SoloVerseRendering vsolo = new(vrend);
+                                                ChapterRendering crend = engine.GetChapter(book.BookNum, c, book.Matches);
                                                 StringBuilder builder = new();
-                                                if (engine.RenderVerseSolo(builder, vsolo, exp.Settings))
+                                                if (engine.RenderChapter(builder, crend, exp.Settings))
                                                     Console.WriteLine(builder.ToString());
                                                 else
-                                                    Console.WriteLine("ERROR: Unable to render verse");
+                                                    Console.WriteLine("ERROR: Unable to render chapter");
+
+                                                lastChapter = c;
+                                                lastBook = book.BookNum;
                                             }
+                                            Console.Write("Continue? (y/n)");
+                                            string? answer = Console.ReadLine();
+                                            if ((answer != null) && answer.StartsWith("n", StringComparison.InvariantCultureIgnoreCase))
+                                            {
+                                                done = true;
+                                                goto DONE;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            byte v = match.Value.Start.V;
+
+                                            VerseRendering vrend = engine.GetVerse(book.BookNum, c, v, book.Matches);
+                                            SoloVerseRendering vsolo = new(vrend);
+                                            StringBuilder builder = new();
+                                            if (engine.RenderVerseSolo(builder, vsolo, exp.Settings))
+                                                Console.WriteLine(builder.ToString());
+                                            else
+                                                Console.WriteLine("ERROR: Unable to render verse");
                                         }
                                     }
                                 }
